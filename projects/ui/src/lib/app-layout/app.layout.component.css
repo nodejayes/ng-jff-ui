@@ -1,0 +1,77 @@
+.app-layout {
+  height: 100%;
+}
+.app-layout > header,
+.app-layout > footer {
+  z-index: 10;
+  height: 40px;
+  width: 100%;
+  left: 0;
+  position: fixed;
+}
+.app-layout > header {
+  top: 0;
+}
+.app-layout > footer {
+  bottom: 0;
+}
+.app-content {
+  height: calc(100% - 80px);
+  margin: 40px 0;
+}
+.app-content-no-footer {
+  height: calc(100% - 40px);
+  margin-top: 40px;
+}
+.app-content-no-header {
+  height: calc(100% - 40px);
+  margin-bottom: 40px;
+}
+.app-content-pure {
+  height: 100%;
+  margin: 0;
+}
+.app-content > .leftSidebar,
+.app-content-no-header > .leftSidebar,
+.app-content-pure > .leftSidebar,
+.app-content-no-footer > .leftSidebar {
+  position: fixed;
+  left: 0;
+  width: 220px;
+  background-color: beige;
+}
+.app-content > .rightSidebar,
+.app-content-no-header > .rightSidebar,
+.app-content-pure > .rightSidebar,
+.app-content-no-footer > .rightSidebar {
+  position: fixed;
+  right: 0;
+  width: 220px;
+  background-color: beige;
+  height: calc(100% - 80px);
+}
+.app-content > .leftSidebar,
+.app-content > .rightSidebar {
+  height: calc(100% - 80px);
+}
+.app-content-no-header > .leftSidebar,
+.app-content-no-footer > .leftSidebar,
+.app-content-no-header > .rightSidebar,
+.app-content-no-footer > .rightSidebar {
+  height: calc(100% - 40px);
+}
+.app-content-pure > .leftSidebar,
+.app-content-pure > .rightSidebar {
+  height: 100%;
+}
+.appLayoutMain {
+  height: 100%;
+}
+.mainScrollbar {
+  --scrollbar-size: 5px;
+  --scrollbar-thumb-color: rgba(0, 0, 255, 0.2);
+  --scrollbar-thumb-transition: height ease-out 150ms,
+  width ease-out 150ms;
+  --scrollbar-track-transition: height ease-out 150ms,
+  width ease-out 150ms;
+}
