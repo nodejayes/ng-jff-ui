@@ -1,23 +1,39 @@
 import { AppLayoutComponent } from './app.layout.component';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement } from '@angular/core';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
+import { Component, Injectable, SimpleChange } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { compileNgModule } from '@angular/compiler';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BehaviorSubject } from 'rxjs';
+import { ViewportService, ViewState } from '../services/viewport.service';
+import SpyObj = jasmine.SpyObj;
+import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   imports: [AppLayoutComponent],
   standalone: true,
-  template: `<app-layout [leftMenuVisible]="true" [rightMenuVisible]="true">
+  template: `<app-layout
+    [(leftMenuVisible)]="leftMenuVisible"
+    [(rightMenuVisible)]="rightMenuVisible"
+  >
     <p layout_header class="headerText">some Title</p>
     <p layout_footer class="footerText">some Footer</p>
     <p layout_left_menu class="leftMenuText">the left Menu</p>
     <p layout_right_menu class="rightMenuText">the right Menu</p>
   </app-layout>`,
 })
-class AppLayoutWrapperComponent {}
+class AppLayoutWrapperComponent {
+  leftMenuVisible = true;
+  rightMenuVisible = true;
+}
 
 describe('Component: AppLayout', () => {
+  const viewportState = new BehaviorSubject(ViewState.LARGE);
+  let viewportServiceSpy: SpyObj<ViewportService>;
   let component: AppLayoutComponent;
   let fixture: ComponentFixture<AppLayoutComponent>;
   let wrapper: AppLayoutWrapperComponent;
@@ -28,9 +44,26 @@ describe('Component: AppLayout', () => {
     fixture.debugElement.query(By.css('.leftSidebar'));
   const getRightMenuElement = () =>
     fixture.debugElement.query(By.css('.rightSidebar'));
+  const getLeftMenuWrapperElement = () =>
+    wrapperFixture.debugElement.query(By.css('.leftSidebar'));
+  const getRightMenuWrapperElement = () =>
+    wrapperFixture.debugElement.query(By.css('.rightSidebar'));
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    viewportServiceSpy = createSpyObj('ViewportService', [
+      'listenViewState',
+      'getCurrentValue',
+    ]);
+    viewportServiceSpy.listenViewState.and.callFake(() => viewportState);
+    viewportServiceSpy.getCurrentValue.and.callFake(() =>
+      viewportState.getValue()
+    );
+    TestBed.overrideComponent(AppLayoutComponent, {
+      set: {
+        providers: [{ provide: ViewportService, useValue: viewportServiceSpy }],
+      },
+    });
+    await TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
         AppLayoutComponent,
@@ -142,6 +175,48 @@ describe('Component: AppLayout', () => {
       );
       expect(rightMenuContent).not.toBeNull();
       expect(rightMenuContent.nativeElement.innerText).toBe('the right Menu');
+    });
+  });
+
+  describe('menu handling on small screens', () => {
+    it('closes the rightMenu when the leftMenu was open', (done) => {
+      viewportState.next(ViewState.MEDIUM);
+      wrapperFixture.detectChanges();
+      wrapper.leftMenuVisible = true;
+      wrapper.rightMenuVisible = true;
+      wrapperFixture.detectChanges();
+      setTimeout(() => {
+        wrapperFixture.detectChanges();
+        expect(getLeftMenuWrapperElement()).toBeNull();
+        expect(getRightMenuWrapperElement()).not.toBeNull();
+        done();
+      }, 300);
+    });
+
+    it('closes the rightMenu when the leftMenu was open and the viewport changes', (done) => {
+      wrapper.leftMenuVisible = true;
+      wrapper.rightMenuVisible = true;
+      wrapperFixture.detectChanges();
+      viewportState.next(ViewState.MEDIUM);
+      wrapperFixture.detectChanges();
+      setTimeout(() => {
+        expect(getLeftMenuWrapperElement()).not.toBeNull();
+        expect(getRightMenuWrapperElement()).toBeNull();
+        done();
+      }, 300);
+    });
+
+    it('not closes the rightMenu when the leftMenu was closed', (done) => {
+      wrapper.leftMenuVisible = true;
+      wrapper.rightMenuVisible = false;
+      wrapperFixture.detectChanges();
+      viewportState.next(ViewState.MEDIUM);
+      wrapperFixture.detectChanges();
+      setTimeout(() => {
+        expect(getLeftMenuWrapperElement()).not.toBeNull();
+        expect(getRightMenuWrapperElement()).toBeNull();
+        done();
+      }, 300);
     });
   });
 });

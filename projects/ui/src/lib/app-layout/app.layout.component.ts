@@ -16,13 +16,13 @@ import {
 } from '@angular/animations';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { BreakpointObserver } from '@angular/cdk/layout';
-import { combineLatest } from 'rxjs';
+import { ViewportService, ViewState } from '../services/viewport.service';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
   imports: [NgIf, NgScrollbarModule, AsyncPipe],
+  providers: [ViewportService],
   templateUrl: 'app.layout.component.html',
   styleUrls: ['app.layout.component.css'],
   animations: [
@@ -129,26 +129,23 @@ export class AppLayoutComponent implements OnDestroy, OnChanges {
   @Output() headerMenuVisibleChange = new EventEmitter<boolean>();
   @Output() footerMenuVisibleChange = new EventEmitter<boolean>();
 
-  constructor(private observer: BreakpointObserver) {}
+  constructor(private viewportService: ViewportService) {}
 
-  private viewSwitchListener = combineLatest([
-    this.observer.observe('(max-width: 839px)'),
-    this.observer.observe('(max-width: 400px)'),
-  ]).subscribe((d) => {
-    if (d.length < 2) {
-      return;
-    }
-    const middle = d[0]?.matches;
-    const small = d[1]?.matches;
-    if (middle && !small) {
-      // only one menu can be open so close the right one when left is open
-      if (this.leftMenuVisible && this.rightMenuVisible) {
-        this.rightMenuVisibleChange.emit(false);
+  private viewSwitchListener = this.viewportService
+    .listenViewState()
+    .subscribe((d) => {
+      switch (d) {
+        case ViewState.MEDIUM:
+          // only one menu can be open so close the right one when left is open
+          if (this.leftMenuVisible && this.rightMenuVisible) {
+            this.rightMenuVisibleChange.emit(false);
+          }
+          break;
+        case ViewState.SMALL:
+          // TODO: view must be switched
+          break;
       }
-    } else if (small) {
-      // TODO: view must be switched
-    }
-  });
+    });
 
   /*
    * change the AnimationState of the left Menu from given Visible Value
@@ -184,6 +181,18 @@ export class AppLayoutComponent implements OnDestroy, OnChanges {
       changes['leftMenuVisible'].currentValue !==
         changes['leftMenuVisible'].previousValue
     ) {
+      switch (this.viewportService.getCurrentValue()) {
+        case ViewState.MEDIUM:
+          if (
+            changes['leftMenuVisible'].currentValue &&
+            this.rightMenuVisible
+          ) {
+            setTimeout(() => {
+              this.rightMenuVisibleChange.emit(false);
+            });
+          }
+          break;
+      }
       this.leftMenuStateChange(changes['leftMenuVisible'].currentValue);
     }
     if (
@@ -191,6 +200,18 @@ export class AppLayoutComponent implements OnDestroy, OnChanges {
       changes['rightMenuVisible'].currentValue !==
         changes['rightMenuVisible'].previousValue
     ) {
+      switch (this.viewportService.getCurrentValue()) {
+        case ViewState.MEDIUM:
+          if (
+            changes['rightMenuVisible'].currentValue &&
+            this.leftMenuVisible
+          ) {
+            setTimeout(() => {
+              this.leftMenuVisibleChange.emit(false);
+            });
+          }
+          break;
+      }
       this.rightMenuStateChange(changes['rightMenuVisible'].currentValue);
     }
   }
