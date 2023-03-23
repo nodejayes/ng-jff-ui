@@ -30,7 +30,7 @@ export class ChatBackendService {
   }
   constructor() {
     this.client = new HubConnectionBuilder()
-      .withUrl("http://192.168.178.20:5000/chatHub")
+      .withUrl("/chatHub")
       .configureLogging(LogLevel.Information)
       .withHubProtocol(new MessagePackHubProtocol())
       .build();
