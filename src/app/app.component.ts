@@ -24,60 +24,7 @@ import { Component } from '@angular/core';
       <p layout_left_menu>Left Menu</p>
 
       <div layout_content>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
-        <h1>
-          asdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsdasdöjfnalsjkdnflasjdnflasjdnfalsjkdnfalsjkdnflaskjdnfalsjkdnfalkjsdnflajkdnfaljsdnflakjsdfalsjkdflajksnflakjsdflasjkdalkjsdflakjsd
-        </h1>
+        <simple-chat></simple-chat>
       </div>
 
       <p layout_right_menu>Right Menu</p>

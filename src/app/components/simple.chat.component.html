@@ -1,0 +1,13 @@
+<h1>Chat</h1>
+
+<form [formGroup]="messageFrom">
+  <input type="text" [formControl]="userControl" />
+  <input type="text" [formControl]="messageControl" />
+  <button (click)="sendMessage()">Send</button>
+</form>
+
+<ul>
+  <li *ngFor="let mess of messages | async">
+    [{{mess.user}}]: {{mess.message}}
+  </li>
+</ul>

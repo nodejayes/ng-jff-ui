@@ -20,11 +20,12 @@
     "@angular/platform-browser-dynamic": "^15.2.0",
     "@angular/router": "^15.2.0",
     "ngx-scrollbar": "^11.0.0",
-    "socket.io-client": "^4.6.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0",
-    "ts-tooling": "^3.9.13"
+    "ts-tooling": "^3.9.13",
+    "@microsoft/signalr": "^7.0.4",
+    "@microsoft/signalr-protocol-msgpack": "7.0.4"
   },
   "devDependencies": {
     "@types/socket.io-client": "^3.0.0",
