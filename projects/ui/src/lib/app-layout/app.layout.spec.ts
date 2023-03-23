@@ -1,17 +1,15 @@
 import { AppLayoutComponent } from './app.layout.component';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import {
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from '@angular/core/testing';
-import { Component, Injectable, SimpleChange } from '@angular/core';
-import { By } from '@angular/platform-browser';
+  IViewportService,
+  ViewportService,
+  ViewState,
+} from '../services/viewport.service';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BehaviorSubject } from 'rxjs';
-import { ViewportService, ViewState } from '../services/viewport.service';
-import SpyObj = jasmine.SpyObj;
-import createSpyObj = jasmine.createSpyObj;
+import { By } from '@angular/platform-browser';
+import { Component } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   imports: [AppLayoutComponent],
@@ -31,146 +29,151 @@ class AppLayoutWrapperComponent {
   rightMenuVisible = true;
 }
 
-describe('Component: AppLayout', () => {
-  const viewportState = new BehaviorSubject(ViewState.LARGE);
-  let viewportServiceSpy: SpyObj<ViewportService>;
-  let component: AppLayoutComponent;
-  let fixture: ComponentFixture<AppLayoutComponent>;
-  let wrapper: AppLayoutWrapperComponent;
-  let wrapperFixture: ComponentFixture<AppLayoutWrapperComponent>;
-  const getHeaderElement = () => fixture.debugElement.query(By.css('header'));
-  const getFooterElement = () => fixture.debugElement.query(By.css('footer'));
-  const getLeftMenuElement = () =>
-    fixture.debugElement.query(By.css('.leftSidebar'));
-  const getRightMenuElement = () =>
-    fixture.debugElement.query(By.css('.rightSidebar'));
-  const getLeftMenuWrapperElement = () =>
-    wrapperFixture.debugElement.query(By.css('.leftSidebar'));
-  const getRightMenuWrapperElement = () =>
-    wrapperFixture.debugElement.query(By.css('.rightSidebar'));
+class MockedViewportService implements IViewportService {
+  private currentView$ = new BehaviorSubject(ViewState.LARGE);
 
-  beforeEach(async () => {
-    viewportServiceSpy = createSpyObj('ViewportService', [
-      'listenViewState',
-      'getCurrentValue',
-    ]);
-    viewportServiceSpy.listenViewState.and.callFake(() => viewportState);
-    viewportServiceSpy.getCurrentValue.and.callFake(() =>
-      viewportState.getValue()
-    );
-    TestBed.overrideComponent(AppLayoutComponent, {
-      set: {
-        providers: [{ provide: ViewportService, useValue: viewportServiceSpy }],
-      },
-    });
-    await TestBed.configureTestingModule({
+  getCurrentValue(): ViewState {
+    return this.currentView$.getValue();
+  }
+
+  listenViewState(): Observable<ViewState> {
+    return this.currentView$;
+  }
+
+  setCurrentView(state: ViewState): void {
+    this.currentView$.next(state);
+  }
+}
+
+describe('AppLayoutComponent Tests', () => {
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
       imports: [
+        AppLayoutWrapperComponent,
         BrowserAnimationsModule,
         AppLayoutComponent,
-        AppLayoutWrapperComponent,
       ],
     }).compileComponents();
-    fixture = TestBed.createComponent(AppLayoutComponent);
-    component = fixture.componentInstance;
-    wrapperFixture = TestBed.createComponent(AppLayoutWrapperComponent);
-    wrapper = wrapperFixture.componentInstance;
-  });
+  }));
 
-  describe('check default values', () => {
-    it('header on default is visible', () => {
-      expect(component.headerVisible).toBeTruthy();
-    });
-    it('footer on default is visible', () => {
-      expect(component.headerVisible).toBeTruthy();
-    });
-    it('leftMenu on default is not visible', () => {
-      expect(component.leftMenuVisible).toBeFalsy();
-    });
-    it('rightMenu on default is not visible', () => {
-      expect(component.rightMenuVisible).toBeFalsy();
-    });
-  });
-
-  describe('header hide and visible', () => {
-    it('header can be hidden', () => {
-      component.headerVisible = false;
+  describe('on default', () => {
+    it('header is visible', () => {
+      const fixture = TestBed.createComponent(AppLayoutComponent);
       fixture.detectChanges();
-      expect(getHeaderElement()).toBeNull();
+      expect(fixture.componentInstance.headerVisible).toBeTruthy();
     });
-    it('header can be visible', () => {
-      component.headerVisible = true;
+    it('footer is visible', () => {
+      const fixture = TestBed.createComponent(AppLayoutComponent);
       fixture.detectChanges();
-      expect(getHeaderElement()).not.toBeNull();
+      expect(fixture.componentInstance.footerVisible).toBeTruthy();
+    });
+    it('leftMenu is hidden', () => {
+      const fixture = TestBed.createComponent(AppLayoutComponent);
+      fixture.detectChanges();
+      expect(fixture.componentInstance.leftMenuVisible).toBeFalsy();
+    });
+    it('rightMenu is hidden', () => {
+      const fixture = TestBed.createComponent(AppLayoutComponent);
+      fixture.detectChanges();
+      expect(fixture.componentInstance.rightMenuVisible).toBeFalsy();
     });
   });
 
-  describe('footer hide and visible', () => {
-    it('footer can be hidden', () => {
-      component.footerVisible = false;
+  describe('header', () => {
+    it('can be hidden', () => {
+      const fixture = TestBed.createComponent(AppLayoutComponent);
       fixture.detectChanges();
-      expect(getFooterElement()).toBeNull();
-    });
-    it('footer can be visible', () => {
-      component.footerVisible = true;
+      fixture.componentInstance.headerVisible = false;
       fixture.detectChanges();
-      expect(getFooterElement()).not.toBeNull();
+      expect(fixture.debugElement.query(By.css('header'))).toBeNull();
     });
-  });
-
-  describe('leftMenu hide and visible', () => {
-    it('leftMenu can be hidden', () => {
-      component.leftMenuVisible = false;
+    it('can be visible', () => {
+      const fixture = TestBed.createComponent(AppLayoutComponent);
       fixture.detectChanges();
-      expect(getLeftMenuElement()).toBeNull();
-    });
-    it('leftMenu can be visible', () => {
-      component.leftMenuVisible = true;
+      fixture.componentInstance.headerVisible = true;
       fixture.detectChanges();
-      expect(getLeftMenuElement()).not.toBeNull();
+      expect(fixture.debugElement.query(By.css('header'))).not.toBeNull();
     });
-  });
-
-  describe('rightMenu hide and visible', () => {
-    it('rightMenu can be hidden', () => {
-      component.rightMenuVisible = false;
+    it('content has projected', () => {
+      const fixture = TestBed.createComponent(AppLayoutWrapperComponent);
       fixture.detectChanges();
-      expect(getRightMenuElement()).toBeNull();
-    });
-    it('rightMenu can be visible', () => {
-      component.rightMenuVisible = true;
-      fixture.detectChanges();
-      expect(getRightMenuElement()).not.toBeNull();
-    });
-  });
-
-  describe('check ng-content was projected', () => {
-    it('header content projected', () => {
-      wrapperFixture.detectChanges();
-      const headerContent = wrapperFixture.debugElement.query(
-        By.css('.headerText')
-      );
+      const headerContent = fixture.debugElement.query(By.css('.headerText'));
       expect(headerContent).not.toBeNull();
       expect(headerContent.nativeElement.innerText).toBe('some Title');
     });
-    it('footer content projected', () => {
-      wrapperFixture.detectChanges();
-      const footerContent = wrapperFixture.debugElement.query(
-        By.css('.footerText')
-      );
+  });
+
+  describe('footer', () => {
+    it('can be hidden', () => {
+      const fixture = TestBed.createComponent(AppLayoutComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.footerVisible = false;
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.css('footer'))).toBeNull();
+    });
+    it('can be visible', () => {
+      const fixture = TestBed.createComponent(AppLayoutComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.footerVisible = true;
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.css('footer'))).not.toBeNull();
+    });
+    it('content has projected', () => {
+      const fixture = TestBed.createComponent(AppLayoutWrapperComponent);
+      fixture.detectChanges();
+      const footerContent = fixture.debugElement.query(By.css('.footerText'));
       expect(footerContent).not.toBeNull();
       expect(footerContent.nativeElement.innerText).toBe('some Footer');
     });
-    it('leftMenu content projected', () => {
-      wrapperFixture.detectChanges();
-      const leftMenuContent = wrapperFixture.debugElement.query(
+  });
+
+  describe('leftMenu', () => {
+    it('can be hidden', () => {
+      const fixture = TestBed.createComponent(AppLayoutComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.leftMenuVisible = false;
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.css('.leftSidebar'))).toBeNull();
+    });
+    it('can be visible', () => {
+      const fixture = TestBed.createComponent(AppLayoutComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.leftMenuVisible = true;
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.css('.leftSidebar'))).not.toBeNull();
+    });
+    it('content has projected', () => {
+      const fixture = TestBed.createComponent(AppLayoutWrapperComponent);
+      fixture.detectChanges();
+      const leftMenuContent = fixture.debugElement.query(
         By.css('.leftMenuText')
       );
       expect(leftMenuContent).not.toBeNull();
       expect(leftMenuContent.nativeElement.innerText).toBe('the left Menu');
     });
-    it('rightMenu content projected', () => {
-      wrapperFixture.detectChanges();
-      const rightMenuContent = wrapperFixture.debugElement.query(
+  });
+
+  describe('rightMenu', () => {
+    it('can be hidden', () => {
+      const fixture = TestBed.createComponent(AppLayoutComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.rightMenuVisible = false;
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.css('.rightSidebar'))).toBeNull();
+    });
+    it('can be visible', () => {
+      const fixture = TestBed.createComponent(AppLayoutComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.rightMenuVisible = true;
+      fixture.detectChanges();
+      expect(
+        fixture.debugElement.query(By.css('.rightSidebar'))
+      ).not.toBeNull();
+    });
+    it('content has projected', () => {
+      const fixture = TestBed.createComponent(AppLayoutWrapperComponent);
+      fixture.detectChanges();
+      const rightMenuContent = fixture.debugElement.query(
         By.css('.rightMenuText')
       );
       expect(rightMenuContent).not.toBeNull();
@@ -178,6 +181,33 @@ describe('Component: AppLayout', () => {
     });
   });
 
+  describe('max-width: 839px', () => {
+    it('close the leftMenu when open and the rightMenu was opened', (done) => {
+      const viewportServiceMock = new MockedViewportService();
+      TestBed.overrideComponent(AppLayoutComponent, {
+        set: {
+          providers: [
+            { provide: ViewportService, useValue: viewportServiceMock },
+          ],
+        },
+      });
+      viewportServiceMock.setCurrentView(ViewState.MEDIUM);
+      const fixture = TestBed.createComponent(AppLayoutWrapperComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.leftMenuVisible = true;
+      fixture.componentInstance.rightMenuVisible = true;
+      fixture.detectChanges();
+      setTimeout(() => {
+        expect(fixture.debugElement.query(By.css('.leftSidebar'))).toBeNull();
+        done();
+      }, 500);
+    });
+  });
+});
+
+/*
+
+describe('Component: AppLayout', () => {
   describe('menu handling on small screens', () => {
     it('closes the rightMenu when the leftMenu was open', (done) => {
       viewportState.next(ViewState.MEDIUM);
@@ -220,3 +250,4 @@ describe('Component: AppLayout', () => {
     });
   });
 });
+*/

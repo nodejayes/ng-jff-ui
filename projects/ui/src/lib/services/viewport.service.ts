@@ -8,8 +8,13 @@ export enum ViewState {
   LARGE,
 }
 
+export interface IViewportService {
+  getCurrentValue(): ViewState;
+  listenViewState(): Observable<ViewState>;
+}
+
 @Injectable()
-export class ViewportService implements OnDestroy {
+export class ViewportService implements IViewportService, OnDestroy {
   private currentView$ = new BehaviorSubject(ViewState.LARGE);
   private viewSwitchListener = combineLatest([
     this.observer.observe('(max-width: 839px)'),
