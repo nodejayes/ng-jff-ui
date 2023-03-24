@@ -8,7 +8,7 @@ import {
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
-import { Component } from '@angular/core';
+import {Component, SimpleChanges} from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
@@ -191,16 +191,28 @@ describe('AppLayoutComponent Tests', () => {
           ],
         },
       });
-      viewportServiceMock.setCurrentView(ViewState.MEDIUM);
-      const fixture = TestBed.createComponent(AppLayoutWrapperComponent);
-      fixture.detectChanges();
+      const fixture = TestBed.createComponent(AppLayoutComponent);
       fixture.componentInstance.leftMenuVisible = true;
-      fixture.componentInstance.rightMenuVisible = true;
-      fixture.detectChanges();
-      setTimeout(() => {
+      fixture.componentInstance.rightMenuVisible = false;
+      fixture.componentInstance.rightMenuVisibleChange.subscribe((d) => {
+        fixture.componentInstance.ngOnChanges({
+          leftMenuVisible: {
+            currentValue: d,
+            previousValue: fixture.componentInstance.leftMenuVisible,
+            firstChange: false,
+            isFirstChange(): boolean {
+              return false
+            }
+          },
+        } as SimpleChanges)
+        expect(fixture.debugElement.query(By.css('.rightSidebar'))).not.toBeNull();
         expect(fixture.debugElement.query(By.css('.leftSidebar'))).toBeNull();
         done();
-      }, 500);
+      });
+      fixture.detectChanges();
+      viewportServiceMock.setCurrentView(ViewState.MEDIUM);
+      fixture.componentInstance.rightMenuVisible = true;
+      fixture.detectChanges();
     });
   });
 });

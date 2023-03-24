@@ -20,7 +20,6 @@ export class ViewportService implements IViewportService, OnDestroy {
     this.observer.observe('(max-width: 839px)'),
     this.observer.observe('(max-width: 400px)'),
   ]).subscribe((d) => {
-    console.info(d[0]?.matches, d[1]?.matches);
     if (d[1]?.matches) {
       this.currentView$.next(ViewState.SMALL);
       return;
