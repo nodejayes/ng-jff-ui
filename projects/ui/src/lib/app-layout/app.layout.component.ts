@@ -3,7 +3,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnDestroy,
+  OnDestroy, OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
@@ -17,6 +17,7 @@ import {
 import { AsyncPipe, NgIf } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ViewportService, ViewState } from '../services/viewport.service';
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-layout',
@@ -38,7 +39,7 @@ import { ViewportService, ViewState } from '../services/viewport.service';
       transition('* => off', animate('250ms')),
       transition('* => on', animate('250ms')),
     ]),
-    trigger('rightMenu', [
+    trigger('rightSidebar', [
       transition(':enter', [
         style({
           transform: 'translateX(100%)',
@@ -66,7 +67,7 @@ import { ViewportService, ViewState } from '../services/viewport.service';
         ),
       ]),
     ]),
-    trigger('leftMenu', [
+    trigger('leftSidebar', [
       transition(':enter', [
         style({
           transform: 'translateX(-100%)',
@@ -96,26 +97,26 @@ import { ViewportService, ViewState } from '../services/viewport.service';
     ]),
   ],
 })
-export class AppLayoutComponent implements OnDestroy, OnChanges {
+export class AppLayoutComponent implements OnInit, OnDestroy, OnChanges {
   /*
    * the State of the AnimationTrigger for the left Menu
    * this one changes automatically when the leftMenuVisible was changed
    */
-  leftMenuAnimationState = 'on';
+  leftSidebarAnimationState = 'on';
   /*
    * the State of the AnimationTrigger for the right Menu
    * this one changes automatically when the rightMenuVisible was changed
    */
-  rightMenuAnimationState = 'on';
+  rightSidebarAnimationState = 'on';
 
   /*
    * is the left Menu of the Layout visible or not
    */
-  @Input() leftMenuVisible = false;
+  @Input() leftSidebarVisible = false;
   /*
    * is the right Menu of the Layout visible or not
    */
-  @Input() rightMenuVisible = false;
+  @Input() rightSidebarVisible = false;
   /*
    * is the Header of the Layout visible or not
    */
@@ -124,95 +125,93 @@ export class AppLayoutComponent implements OnDestroy, OnChanges {
    * is the Footer of the Layout visible or not
    */
   @Input() footerVisible = true;
-  @Output() leftMenuVisibleChange = new EventEmitter<boolean>();
-  @Output() rightMenuVisibleChange = new EventEmitter<boolean>();
-  @Output() headerMenuVisibleChange = new EventEmitter<boolean>();
-  @Output() footerMenuVisibleChange = new EventEmitter<boolean>();
+  @Output() leftSidebarVisibleChange = new EventEmitter<boolean>(true);
+  @Output() rightSidebarVisibleChange = new EventEmitter<boolean>(true);
+  @Output() headerVisibleChange = new EventEmitter<boolean>();
+  @Output() footerVisibleChange = new EventEmitter<boolean>();
 
   constructor(private viewportService: ViewportService) {}
 
-  private viewSwitchListener = this.viewportService
-    .listenViewState()
-    .subscribe((d) => {
-      switch (d) {
-        case ViewState.MEDIUM:
-          // only one menu can be open so close the right one when left is open
-          if (this.leftMenuVisible && this.rightMenuVisible) {
-            this.rightMenuVisibleChange.emit(false);
-          }
-          break;
-        case ViewState.SMALL:
-          // TODO: view must be switched
-          break;
-      }
-    });
+  private viewSwitchListener: Subscription | null = null;
 
   /*
    * change the AnimationState of the left Menu from given Visible Value
    * @param currentValue the current leftMenuVisible value
    */
-  leftMenuStateChange(currentValue: boolean): void {
+  leftSidebarStateChange(currentValue: boolean): void {
     if (currentValue) {
-      this.leftMenuAnimationState = 'on';
+      this.leftSidebarAnimationState = 'on';
       return;
     }
-    this.leftMenuAnimationState = 'off';
+    this.leftSidebarAnimationState = 'off';
   }
 
   /*
    * change the AnimationState of the right Menu from given Visible Value
    * @param currentValue the current rightMenuVisible value
    */
-  rightMenuStateChange(currentValue: boolean): void {
+  rightSidebarStateChange(currentValue: boolean): void {
     if (currentValue) {
-      this.rightMenuAnimationState = 'on';
+      this.rightSidebarAnimationState = 'on';
       return;
     }
-    this.rightMenuAnimationState = 'off';
+    this.rightSidebarAnimationState = 'off';
   }
 
-  ngOnDestroy() {
+  ngOnInit(): void {
+    this.viewSwitchListener = this.viewportService
+      .listenViewState()
+      .subscribe((d) => {
+        switch (d) {
+          case ViewState.MEDIUM:
+            // only one menu can be open so close the right one when left is open
+            if (this.leftSidebarVisible && this.rightSidebarVisible) {
+              this.rightSidebarVisible = false;
+              this.rightSidebarStateChange(false);
+              this.rightSidebarVisibleChange.emit(false);
+            }
+            break;
+          case ViewState.SMALL:
+            // TODO: view must be switched
+            break;
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
     this.viewSwitchListener?.unsubscribe();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (
-      changes['leftMenuVisible'] &&
-      changes['leftMenuVisible'].currentValue !==
-        changes['leftMenuVisible'].previousValue
-    ) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['leftSidebarVisible']) {
       switch (this.viewportService.getCurrentValue()) {
         case ViewState.MEDIUM:
           if (
-            changes['leftMenuVisible'].currentValue &&
-            this.rightMenuVisible
+            changes['leftSidebarVisible'].currentValue &&
+            this.rightSidebarVisible
           ) {
-            setTimeout(() => {
-              this.rightMenuVisibleChange.emit(false);
-            });
+            this.rightSidebarVisible = false;
+            this.rightSidebarStateChange(false);
+            this.rightSidebarVisibleChange.emit(false);
           }
           break;
       }
-      this.leftMenuStateChange(changes['leftMenuVisible'].currentValue);
+      this.leftSidebarStateChange(changes['leftSidebarVisible'].currentValue);
     }
-    if (
-      changes['rightMenuVisible'] &&
-      changes['rightMenuVisible'].currentValue !==
-        changes['rightMenuVisible'].previousValue
-    ) {
+    if (changes['rightSidebarVisible']) {
       switch (this.viewportService.getCurrentValue()) {
         case ViewState.MEDIUM:
           if (
-            changes['rightMenuVisible'].currentValue &&
-            this.leftMenuVisible
+            changes['rightSidebarVisible'].currentValue &&
+            this.leftSidebarVisible
           ) {
-            setTimeout(() => {
-              this.leftMenuVisibleChange.emit(false);
-            });
+            this.leftSidebarVisible = false;
+            this.leftSidebarStateChange(false);
+            this.leftSidebarVisibleChange.emit(false);
           }
           break;
       }
-      this.rightMenuStateChange(changes['rightMenuVisible'].currentValue);
+      this.rightSidebarStateChange(changes['rightSidebarVisible'].currentValue);
     }
   }
 }

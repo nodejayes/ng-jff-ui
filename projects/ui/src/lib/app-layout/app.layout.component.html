@@ -1,6 +1,6 @@
 
 <div class="app-layout">
-  <header *ngIf="headerVisible">
+  <header data-testid="layout-header" *ngIf="headerVisible">
     <ng-content select="[layout_header]"></ng-content>
   </header>
   <div
@@ -10,35 +10,38 @@
     [class.app-content-pure]="!headerVisible && !footerVisible"
   >
     <aside
+      data-testid="layout-left-sidebar"
       scrollViewport
       class='leftSidebar'
-      *ngIf="leftMenuVisible"
-      @leftMenu
+      *ngIf="leftSidebarVisible"
+      @leftSidebar
     >
       <ng-scrollbar class='mainScrollbar' [track]="'all'">
-        <ng-content select="[layout_left_menu]"></ng-content>
+        <ng-content select="[layout_left_sidebar]"></ng-content>
       </ng-scrollbar>
     </aside>
     <aside
+      data-testid="layout-right-sidebar"
       class='rightSidebar'
-      *ngIf="rightMenuVisible"
-      @rightMenu
+      *ngIf="rightSidebarVisible"
+      @rightSidebar
     >
       <ng-scrollbar class='mainScrollbar' [track]="'all'">
-        <ng-content select="[layout_right_menu]"></ng-content>
+        <ng-content select="[layout_right_sidebar]"></ng-content>
       </ng-scrollbar>
     </aside>
     <main
+      data-testid="layout-main-content"
       class='appLayoutMain'
-      [@mainContentLeft]="leftMenuAnimationState"
-      [@mainContentRight]="rightMenuAnimationState"
+      [@mainContentLeft]="leftSidebarAnimationState"
+      [@mainContentRight]="rightSidebarAnimationState"
     >
       <ng-scrollbar class='mainScrollbar' [track]="'all'">
         <ng-content select="[layout_content]"></ng-content>
       </ng-scrollbar>
     </main>
   </div>
-  <footer *ngIf="footerVisible">
+  <footer data-testid="layout-footer" *ngIf="footerVisible">
     <ng-content select="[layout_footer]"></ng-content>
   </footer>
 </div>

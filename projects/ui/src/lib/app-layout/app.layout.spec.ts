@@ -1,265 +1,216 @@
-import { AppLayoutComponent } from './app.layout.component';
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import {
-  IViewportService,
-  ViewportService,
-  ViewState,
-} from '../services/viewport.service';
-
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { By } from '@angular/platform-browser';
-import {Component, SimpleChanges} from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import {AppLayoutComponent} from "./app.layout.component";
+import {BehaviorSubject} from "rxjs";
+import {ViewportService, ViewState} from "../services/viewport.service";
+import {ComponentFixture, TestBed} from "@angular/core/testing";
+import {NoopAnimationsModule} from "@angular/platform-browser/animations";
+import {Component, SimpleChange} from "@angular/core";
+import SpyObj = jasmine.SpyObj;
+import createSpyObj = jasmine.createSpyObj;
 
 @Component({
-  imports: [AppLayoutComponent],
-  standalone: true,
-  template: `<app-layout
-    [(leftMenuVisible)]="leftMenuVisible"
-    [(rightMenuVisible)]="rightMenuVisible"
-  >
-    <p layout_header class="headerText">some Title</p>
-    <p layout_footer class="footerText">some Footer</p>
-    <p layout_left_menu class="leftMenuText">the left Menu</p>
-    <p layout_right_menu class="rightMenuText">the right Menu</p>
-  </app-layout>`,
+  template: `
+    <app-layout [(headerVisible)]="headerVisible"
+                [(footerVisible)]="footerVisible"
+                [(leftSidebarVisible)]="leftSidebarVisible"
+                [(rightSidebarVisible)]="rightSidebarVisible">
+      <div layout_header>Title</div>
+      <div layout_left_sidebar>Left</div>
+      <div layout_right_sidebar>Right</div>
+      <div layout_footer>Foot</div>
+    </app-layout>`,
 })
 class AppLayoutWrapperComponent {
-  leftMenuVisible = true;
-  rightMenuVisible = true;
+  leftSidebarVisible = true;
+  rightSidebarVisible = true;
+  headerVisible = true;
+  footerVisible = true;
 }
 
-class MockedViewportService implements IViewportService {
-  private currentView$ = new BehaviorSubject(ViewState.LARGE);
+describe('AppLayoutComponent', () => {
+  describe('basic Component', () => {
+    let currentView = new BehaviorSubject(ViewState.LARGE);
+    let viewportServiceSpy: SpyObj<ViewportService>;
+    let fixture: ComponentFixture<AppLayoutComponent>;
+    let component: AppLayoutComponent;
 
-  getCurrentValue(): ViewState {
-    return this.currentView$.getValue();
-  }
-
-  listenViewState(): Observable<ViewState> {
-    return this.currentView$;
-  }
-
-  setCurrentView(state: ViewState): void {
-    this.currentView$.next(state);
-  }
-}
-
-describe('AppLayoutComponent Tests', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        AppLayoutWrapperComponent,
-        BrowserAnimationsModule,
-        AppLayoutComponent,
-      ],
-    }).compileComponents();
-  }));
-
-  describe('on default', () => {
-    it('header is visible', () => {
-      const fixture = TestBed.createComponent(AppLayoutComponent);
-      fixture.detectChanges();
-      expect(fixture.componentInstance.headerVisible).toBeTruthy();
-    });
-    it('footer is visible', () => {
-      const fixture = TestBed.createComponent(AppLayoutComponent);
-      fixture.detectChanges();
-      expect(fixture.componentInstance.footerVisible).toBeTruthy();
-    });
-    it('leftMenu is hidden', () => {
-      const fixture = TestBed.createComponent(AppLayoutComponent);
-      fixture.detectChanges();
-      expect(fixture.componentInstance.leftMenuVisible).toBeFalsy();
-    });
-    it('rightMenu is hidden', () => {
-      const fixture = TestBed.createComponent(AppLayoutComponent);
-      fixture.detectChanges();
-      expect(fixture.componentInstance.rightMenuVisible).toBeFalsy();
-    });
-  });
-
-  describe('header', () => {
-    it('can be hidden', () => {
-      const fixture = TestBed.createComponent(AppLayoutComponent);
-      fixture.detectChanges();
-      fixture.componentInstance.headerVisible = false;
-      fixture.detectChanges();
-      expect(fixture.debugElement.query(By.css('header'))).toBeNull();
-    });
-    it('can be visible', () => {
-      const fixture = TestBed.createComponent(AppLayoutComponent);
-      fixture.detectChanges();
-      fixture.componentInstance.headerVisible = true;
-      fixture.detectChanges();
-      expect(fixture.debugElement.query(By.css('header'))).not.toBeNull();
-    });
-    it('content has projected', () => {
-      const fixture = TestBed.createComponent(AppLayoutWrapperComponent);
-      fixture.detectChanges();
-      const headerContent = fixture.debugElement.query(By.css('.headerText'));
-      expect(headerContent).not.toBeNull();
-      expect(headerContent.nativeElement.innerText).toBe('some Title');
-    });
-  });
-
-  describe('footer', () => {
-    it('can be hidden', () => {
-      const fixture = TestBed.createComponent(AppLayoutComponent);
-      fixture.detectChanges();
-      fixture.componentInstance.footerVisible = false;
-      fixture.detectChanges();
-      expect(fixture.debugElement.query(By.css('footer'))).toBeNull();
-    });
-    it('can be visible', () => {
-      const fixture = TestBed.createComponent(AppLayoutComponent);
-      fixture.detectChanges();
-      fixture.componentInstance.footerVisible = true;
-      fixture.detectChanges();
-      expect(fixture.debugElement.query(By.css('footer'))).not.toBeNull();
-    });
-    it('content has projected', () => {
-      const fixture = TestBed.createComponent(AppLayoutWrapperComponent);
-      fixture.detectChanges();
-      const footerContent = fixture.debugElement.query(By.css('.footerText'));
-      expect(footerContent).not.toBeNull();
-      expect(footerContent.nativeElement.innerText).toBe('some Footer');
-    });
-  });
-
-  describe('leftMenu', () => {
-    it('can be hidden', () => {
-      const fixture = TestBed.createComponent(AppLayoutComponent);
-      fixture.detectChanges();
-      fixture.componentInstance.leftMenuVisible = false;
-      fixture.detectChanges();
-      expect(fixture.debugElement.query(By.css('.leftSidebar'))).toBeNull();
-    });
-    it('can be visible', () => {
-      const fixture = TestBed.createComponent(AppLayoutComponent);
-      fixture.detectChanges();
-      fixture.componentInstance.leftMenuVisible = true;
-      fixture.detectChanges();
-      expect(fixture.debugElement.query(By.css('.leftSidebar'))).not.toBeNull();
-    });
-    it('content has projected', () => {
-      const fixture = TestBed.createComponent(AppLayoutWrapperComponent);
-      fixture.detectChanges();
-      const leftMenuContent = fixture.debugElement.query(
-        By.css('.leftMenuText')
-      );
-      expect(leftMenuContent).not.toBeNull();
-      expect(leftMenuContent.nativeElement.innerText).toBe('the left Menu');
-    });
-  });
-
-  describe('rightMenu', () => {
-    it('can be hidden', () => {
-      const fixture = TestBed.createComponent(AppLayoutComponent);
-      fixture.detectChanges();
-      fixture.componentInstance.rightMenuVisible = false;
-      fixture.detectChanges();
-      expect(fixture.debugElement.query(By.css('.rightSidebar'))).toBeNull();
-    });
-    it('can be visible', () => {
-      const fixture = TestBed.createComponent(AppLayoutComponent);
-      fixture.detectChanges();
-      fixture.componentInstance.rightMenuVisible = true;
-      fixture.detectChanges();
-      expect(
-        fixture.debugElement.query(By.css('.rightSidebar'))
-      ).not.toBeNull();
-    });
-    it('content has projected', () => {
-      const fixture = TestBed.createComponent(AppLayoutWrapperComponent);
-      fixture.detectChanges();
-      const rightMenuContent = fixture.debugElement.query(
-        By.css('.rightMenuText')
-      );
-      expect(rightMenuContent).not.toBeNull();
-      expect(rightMenuContent.nativeElement.innerText).toBe('the right Menu');
-    });
-  });
-
-  describe('max-width: 839px', () => {
-    it('close the leftMenu when open and the rightMenu was opened', (done) => {
-      const viewportServiceMock = new MockedViewportService();
-      TestBed.overrideComponent(AppLayoutComponent, {
+    beforeEach(async () => {
+      viewportServiceSpy = createSpyObj<ViewportService>([
+        'listenViewState', 'getCurrentValue',
+      ]);
+      viewportServiceSpy.getCurrentValue.and.callFake(() => currentView.getValue());
+      viewportServiceSpy.listenViewState.and.callFake(() => currentView);
+      await TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, AppLayoutComponent]
+      }).overrideComponent(AppLayoutComponent, {
         set: {
-          providers: [
-            { provide: ViewportService, useValue: viewportServiceMock },
-          ],
-        },
-      });
-      const fixture = TestBed.createComponent(AppLayoutComponent);
-      fixture.componentInstance.leftMenuVisible = true;
-      fixture.componentInstance.rightMenuVisible = false;
-      fixture.componentInstance.rightMenuVisibleChange.subscribe((d) => {
-        fixture.componentInstance.ngOnChanges({
-          leftMenuVisible: {
-            currentValue: d,
-            previousValue: fixture.componentInstance.leftMenuVisible,
-            firstChange: false,
-            isFirstChange(): boolean {
-              return false
-            }
-          },
-        } as SimpleChanges)
-        expect(fixture.debugElement.query(By.css('.rightSidebar'))).not.toBeNull();
-        expect(fixture.debugElement.query(By.css('.leftSidebar'))).toBeNull();
-        done();
+          providers: [{provide: ViewportService, useValue: viewportServiceSpy}],
+        }
+      }).compileComponents();
+    });
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(AppLayoutComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('on default header is visible', async () => {
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-header"]')).not.toBeNull();
+    });
+    it('on default footer is visible', async () => {
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-footer"]')).not.toBeNull();
+    });
+    it('on default leftMenu is hidden', async () => {
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-left-sidebar"]')).toBeNull();
+    });
+    it('on default rightMenu is hidden', async () => {
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-right-sidebar"]')).toBeNull();
+    });
+
+    it('header can be hidden', async () => {
+      component.headerVisible = false;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-header"]')).toBeNull();
+    });
+    it('header can be visible', async () => {
+      component.headerVisible = true;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-header"]')).not.toBeNull();
+    });
+
+    it('footer can be hidden', async () => {
+      component.footerVisible = false;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-footer"]')).toBeNull();
+    });
+    it('footer can be visible', async () => {
+      component.footerVisible = true;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-footer"]')).not.toBeNull();
+    });
+
+    it('leftMenu can be hidden', async () => {
+      component.leftSidebarVisible = false;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-left-sidebar"]')).toBeNull();
+    });
+    it('leftMenu can be visible', async () => {
+      component.leftSidebarVisible = true;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-left-sidebar"]')).not.toBeNull();
+    });
+
+    it('rightMenu can be hidden', async () => {
+      component.rightSidebarVisible = false;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-right-sidebar"]')).toBeNull();
+    });
+    it('rightMenu can be visible', async () => {
+      component.rightSidebarVisible = true;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-right-sidebar"]')).not.toBeNull();
+    });
+  });
+
+  describe('with Wrappper Component', () => {
+    let currentView = new BehaviorSubject(ViewState.LARGE);
+    let viewportServiceSpy: SpyObj<ViewportService>;
+    let fixture: ComponentFixture<AppLayoutWrapperComponent>;
+    let component: AppLayoutWrapperComponent;
+
+    beforeEach(async () => {
+      viewportServiceSpy = createSpyObj<ViewportService>([
+        'listenViewState', 'getCurrentValue',
+      ]);
+      viewportServiceSpy.getCurrentValue.and.callFake(() => currentView.getValue());
+      viewportServiceSpy.listenViewState.and.callFake(() => currentView);
+      await TestBed.configureTestingModule({
+        declarations: [AppLayoutWrapperComponent],
+        imports: [NoopAnimationsModule, AppLayoutComponent]
+      }).overrideComponent(AppLayoutComponent, {
+        set: {
+          providers: [{provide: ViewportService, useValue: viewportServiceSpy}],
+        }
+      }).compileComponents();
+    });
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(AppLayoutWrapperComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('header content has projected', async () => {
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-header"]').innerText).toBe('Title');
+    });
+    it('left Sidebar content has projected', async () => {
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-left-sidebar"]').innerText).toBe('Left');
+    });
+    it('right Sidebar content has projected', async () => {
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-right-sidebar"]').innerText).toBe('Right');
+    });
+    it('footer content has projected', async () => {
+      expect(fixture.debugElement.nativeElement.querySelector('[data-testid="layout-footer"]').innerText).toBe('Foot');
+    });
+  });
+
+  describe('Medium View', () => {
+    let currentView = new BehaviorSubject(ViewState.MEDIUM);
+    let viewportServiceSpy: SpyObj<ViewportService>;
+    let fixture: ComponentFixture<AppLayoutComponent>;
+    let component: AppLayoutComponent;
+
+    beforeEach(async () => {
+      viewportServiceSpy = createSpyObj<ViewportService>([
+        'listenViewState', 'getCurrentValue',
+      ]);
+      viewportServiceSpy.getCurrentValue.and.callFake(() => currentView.getValue());
+      viewportServiceSpy.listenViewState.and.callFake(() => currentView);
+      await TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, AppLayoutComponent]
+      }).overrideComponent(AppLayoutComponent, {
+        set: {
+          providers: [{provide: ViewportService, useValue: viewportServiceSpy}],
+        }
+      }).compileComponents();
+    });
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(AppLayoutComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('max-width: 839px close the leftMenu when open and the rightMenu was opened', async () => {
+      spyOn(component.leftSidebarVisibleChange, 'emit');
+      component.leftSidebarVisible = true;
+      component.rightSidebarVisible = false;
+      component.ngOnChanges({
+        rightSidebarVisible: new SimpleChange(false, true, false),
       });
       fixture.detectChanges();
-      viewportServiceMock.setCurrentView(ViewState.MEDIUM);
-      fixture.componentInstance.rightMenuVisible = true;
+      expect(component.leftSidebarVisibleChange.emit).toHaveBeenCalledWith(false);
+    });
+
+    it('max-width: 839px close the rightMenu when open and the leftMenu was opened', async () => {
+      spyOn(component.rightSidebarVisibleChange, 'emit');
+      component.leftSidebarVisible = false;
+      component.rightSidebarVisible = true;
+      component.ngOnChanges({
+        leftSidebarVisible: new SimpleChange(false, true, false),
+      });
       fixture.detectChanges();
+      expect(component.rightSidebarVisibleChange.emit).toHaveBeenCalledWith(false);
+    });
+
+    it('closes rightSidebar when both are open and side was loaded', () => {
+      spyOn(component.rightSidebarVisibleChange, 'emit');
+      component.leftSidebarVisible = true;
+      component.rightSidebarVisible = true;
+      fixture.detectChanges();
+      component.ngOnInit();
+      fixture.detectChanges();
+      expect(component.rightSidebarVisibleChange.emit).toHaveBeenCalledWith(false);
     });
   });
 });
-
-/*
-
-describe('Component: AppLayout', () => {
-  describe('menu handling on small screens', () => {
-    it('closes the rightMenu when the leftMenu was open', (done) => {
-      viewportState.next(ViewState.MEDIUM);
-      wrapperFixture.detectChanges();
-      wrapper.leftMenuVisible = true;
-      wrapper.rightMenuVisible = true;
-      wrapperFixture.detectChanges();
-      setTimeout(() => {
-        wrapperFixture.detectChanges();
-        expect(getLeftMenuWrapperElement()).toBeNull();
-        expect(getRightMenuWrapperElement()).not.toBeNull();
-        done();
-      }, 300);
-    });
-
-    it('closes the rightMenu when the leftMenu was open and the viewport changes', (done) => {
-      wrapper.leftMenuVisible = true;
-      wrapper.rightMenuVisible = true;
-      wrapperFixture.detectChanges();
-      viewportState.next(ViewState.MEDIUM);
-      wrapperFixture.detectChanges();
-      setTimeout(() => {
-        expect(getLeftMenuWrapperElement()).not.toBeNull();
-        expect(getRightMenuWrapperElement()).toBeNull();
-        done();
-      }, 300);
-    });
-
-    it('not closes the rightMenu when the leftMenu was closed', (done) => {
-      wrapper.leftMenuVisible = true;
-      wrapper.rightMenuVisible = false;
-      wrapperFixture.detectChanges();
-      viewportState.next(ViewState.MEDIUM);
-      wrapperFixture.detectChanges();
-      setTimeout(() => {
-        expect(getLeftMenuWrapperElement()).not.toBeNull();
-        expect(getRightMenuWrapperElement()).toBeNull();
-        done();
-      }, 300);
-    });
-  });
-});
-*/

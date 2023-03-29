@@ -6,28 +6,28 @@ import { Component } from '@angular/core';
     <app-layout
       [headerVisible]="true"
       [footerVisible]="false"
-      [(leftMenuVisible)]="leftMenuVisible"
-      [(rightMenuVisible)]="rightMenuVisible"
+      [(leftSidebarVisible)]="leftSidebarVisible"
+      [(rightSidebarVisible)]="rightSidebarVisible"
     >
       <div class="head" layout_header>
         <button (click)="toggleLeftMenu()">
-          <icon-menu *ngIf="!leftMenuVisible"></icon-menu>
-          <icon-close *ngIf="leftMenuVisible"></icon-close>
+          <icon-menu *ngIf="!leftSidebarVisible"></icon-menu>
+          <icon-close *ngIf="leftSidebarVisible"></icon-close>
         </button>
 
         <button (click)="toggleRightMenu()">
-          <icon-menu *ngIf="!rightMenuVisible"></icon-menu>
-          <icon-close *ngIf="rightMenuVisible"></icon-close>
+          <icon-menu *ngIf="!rightSidebarVisible"></icon-menu>
+          <icon-close *ngIf="rightSidebarVisible"></icon-close>
         </button>
       </div>
 
-      <p layout_left_menu>Left Menu</p>
+      <p layout_left_sidebar>Left Menu</p>
 
       <div layout_content>
         <simple-chat></simple-chat>
       </div>
 
-      <p layout_right_menu>Right Menu</p>
+      <p layout_right_sidebar>Right Menu</p>
 
       <div class="foot" layout_footer></div>
     </app-layout>
@@ -52,14 +52,14 @@ import { Component } from '@angular/core';
   ],
 })
 export class AppComponent {
-  leftMenuVisible = false;
-  rightMenuVisible = false;
+  leftSidebarVisible = false;
+  rightSidebarVisible = false;
 
   toggleLeftMenu(): void {
-    this.leftMenuVisible = !this.leftMenuVisible;
+    this.leftSidebarVisible = !this.leftSidebarVisible;
   }
 
   toggleRightMenu(): void {
-    this.rightMenuVisible = !this.rightMenuVisible;
+    this.rightSidebarVisible = !this.rightSidebarVisible;
   }
 }
