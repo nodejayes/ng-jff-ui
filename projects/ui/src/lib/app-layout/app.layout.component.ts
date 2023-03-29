@@ -3,7 +3,8 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnDestroy, OnInit,
+  OnDestroy,
+  OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
@@ -17,10 +18,10 @@ import {
 import { AsyncPipe, NgIf } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ViewportService, ViewState } from '../services/viewport.service';
-import {Subscription} from "rxjs";
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-layout',
+  selector: 'jff-layout',
   standalone: true,
   imports: [NgIf, NgScrollbarModule, AsyncPipe],
   providers: [ViewportService],
@@ -129,10 +130,9 @@ export class AppLayoutComponent implements OnInit, OnDestroy, OnChanges {
   @Output() rightSidebarVisibleChange = new EventEmitter<boolean>(true);
   @Output() headerVisibleChange = new EventEmitter<boolean>();
   @Output() footerVisibleChange = new EventEmitter<boolean>();
+  private viewSwitchListener: Subscription | null = null;
 
   constructor(private viewportService: ViewportService) {}
-
-  private viewSwitchListener: Subscription | null = null;
 
   /*
    * change the AnimationState of the left Menu from given Visible Value

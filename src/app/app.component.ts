@@ -3,7 +3,11 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
   template: `
-    <app-layout
+    <jff-screen-locker [visible]="lockerVisible">
+      <h1>Login</h1>
+      <button (click)="lockerVisible = !lockerVisible">X</button>
+    </jff-screen-locker>
+    <jff-layout
       [headerVisible]="true"
       [footerVisible]="false"
       [(leftSidebarVisible)]="leftSidebarVisible"
@@ -19,6 +23,8 @@ import { Component } from '@angular/core';
           <icon-menu *ngIf="!rightSidebarVisible"></icon-menu>
           <icon-close *ngIf="rightSidebarVisible"></icon-close>
         </button>
+
+        <button (click)="lockerVisible = true">Open Locker</button>
       </div>
 
       <p layout_left_sidebar>Left Menu</p>
@@ -30,7 +36,7 @@ import { Component } from '@angular/core';
       <p layout_right_sidebar>Right Menu</p>
 
       <div class="foot" layout_footer></div>
-    </app-layout>
+    </jff-layout>
   `,
   styles: [
     `
@@ -40,6 +46,7 @@ import { Component } from '@angular/core';
         box-shadow: 0 2px 5px #0000004d;
         height: 100%;
       }
+
       .head > button {
         width: 35px;
         height: 35px;
@@ -54,6 +61,7 @@ import { Component } from '@angular/core';
 export class AppComponent {
   leftSidebarVisible = false;
   rightSidebarVisible = false;
+  lockerVisible = false;
 
   toggleLeftMenu(): void {
     this.leftSidebarVisible = !this.leftSidebarVisible;

@@ -3,12 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ReactiveFormsModule} from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MenuIconComponent } from '../../projects/ui/src/lib/icon/menu.icon.component';
 import { CloseIconComponent } from '../../projects/ui/src/lib/icon/close.icon.component';
 import { AppLayoutComponent } from '../../projects/ui/src/lib/app-layout/app.layout.component';
-import {SimpleChatComponent} from "./components/simple.chat.component";
+import { SimpleChatComponent } from './components/simple.chat.component';
+import { ScreenLockerComponent } from '../../projects/ui/src/lib/screen-locker/screen.locker.component';
 
 @NgModule({
   declarations: [AppComponent, SimpleChatComponent],
@@ -20,6 +21,7 @@ import {SimpleChatComponent} from "./components/simple.chat.component";
     MenuIconComponent,
     CloseIconComponent,
     AppLayoutComponent,
+    ScreenLockerComponent,
   ],
   providers: [],
   bootstrap: [AppComponent],

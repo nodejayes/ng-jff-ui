@@ -3,7 +3,7 @@ import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { BehaviorSubject, of } from 'rxjs';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('Viewport Service Tests', () => {
+describe('ViewportService Tests', () => {
   it('screens with max-width larger than 839px returns ViewState LARGE', () => {
     const breakpointObserverSpy = createSpyObj(BreakpointObserver, ['observe']);
     breakpointObserverSpy.observe.and.callFake(() =>
