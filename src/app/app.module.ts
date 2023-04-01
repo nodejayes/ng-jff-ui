@@ -10,6 +10,7 @@ import { CloseIconComponent } from '../../projects/ui/src/lib/icon/close.icon.co
 import { AppLayoutComponent } from '../../projects/ui/src/lib/app-layout/app.layout.component';
 import { SimpleChatComponent } from './components/simple.chat.component';
 import { ScreenLockerComponent } from '../../projects/ui/src/lib/screen-locker/screen.locker.component';
+import { MenuComponent } from '../../projects/ui/src/lib/menu/menu.component';
 
 @NgModule({
   declarations: [AppComponent, SimpleChatComponent],
@@ -22,6 +23,7 @@ import { ScreenLockerComponent } from '../../projects/ui/src/lib/screen-locker/s
     CloseIconComponent,
     AppLayoutComponent,
     ScreenLockerComponent,
+    MenuComponent,
   ],
   providers: [],
   bootstrap: [AppComponent],

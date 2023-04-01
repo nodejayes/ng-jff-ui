@@ -25,7 +25,7 @@
     "@microsoft/signalr-protocol-msgpack": "7.0.4",
     "ngx-scrollbar": "^11.0.0",
     "rxjs": "~7.8.0",
-    "ts-tooling": "^3.10.4",
+    "ts-tooling": "^3.10.5-beta.4",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"
   },

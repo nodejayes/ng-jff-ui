@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MenuItem } from '../../projects/ui/src/lib/menu/datastructure';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +28,9 @@ import { Component } from '@angular/core';
         <button (click)="lockerVisible = true">Open Locker</button>
       </div>
 
-      <p layout_left_sidebar>Left Menu</p>
+      <p layout_left_sidebar>
+        <jff-menu [items]="menuItems"></jff-menu>
+      </p>
 
       <div layout_content>
         <simple-chat></simple-chat>
@@ -59,9 +62,30 @@ import { Component } from '@angular/core';
   ],
 })
 export class AppComponent {
-  leftSidebarVisible = false;
+  leftSidebarVisible = true;
   rightSidebarVisible = false;
   lockerVisible = false;
+  menuItems: MenuItem[] = [
+    {
+      id: 1,
+      title: 'Home',
+      childs: [],
+      clickHandler: (i) => console.info('clicked:', i),
+    },
+    {
+      id: 2,
+      title: 'Modul1',
+      childs: [
+        {
+          id: 20,
+          title: 'Modul1.1',
+          childs: [],
+          clickHandler: (i) => console.info('clicked:', i),
+        },
+      ],
+      clickHandler: (i) => console.info('clicked:', i),
+    },
+  ];
 
   toggleLeftMenu(): void {
     this.leftSidebarVisible = !this.leftSidebarVisible;
