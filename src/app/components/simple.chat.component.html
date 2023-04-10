@@ -1,9 +1,9 @@
 <h1>Chat</h1>
 
 <form [formGroup]="messageFrom">
-  <input type="text" [formControl]="userControl" />
-  <input type="text" [formControl]="messageControl" />
-  <button (click)="sendMessage()">Send</button>
+  <input [formControl]="userControl" type="text"/>
+  <input [formControl]="messageControl" type="text"/>
+  <jff-button (click)="sendMessage()" [height]="25">Send</jff-button>
 </form>
 
 <ul>

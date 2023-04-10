@@ -101,29 +101,29 @@ import { StyleService } from '../services/style.service';
   ],
 })
 export class AppLayoutComponent implements OnInit, OnDestroy, OnChanges {
-  /*
+  /**
    * the State of the AnimationTrigger for the left Menu
    * this one changes automatically when the leftMenuVisible was changed
    */
   leftSidebarAnimationState = 'on';
-  /*
+  /**
    * the State of the AnimationTrigger for the right Menu
    * this one changes automatically when the rightMenuVisible was changed
    */
   rightSidebarAnimationState = 'on';
-  /*
+  /**
    * is the left Menu of the Layout visible or not
    */
   @Input() leftSidebarVisible = false;
-  /*
+  /**
    * is the right Menu of the Layout visible or not
    */
   @Input() rightSidebarVisible = false;
-  /*
+  /**
    * is the Header of the Layout visible or not
    */
   @Input() headerVisible = true;
-  /*
+  /**
    * is the Footer of the Layout visible or not
    */
   @Input() footerVisible = true;
@@ -134,12 +134,12 @@ export class AppLayoutComponent implements OnInit, OnDestroy, OnChanges {
   private styleService = inject(StyleService);
   @Input() headerColor = this.styleService.accentColor;
   @Input() footerColor = this.styleService.accentColor;
-  /*
+  /**
    * change the AnimationState of the right Menu from given Visible Value
    * @param currentValue the current rightMenuVisible value
    */
   @Input() mainColor = this.styleService.baseColor;
-  /*
+  /**
    * change the AnimationState of the left Menu from given Visible Value
    * @param currentValue the current leftMenuVisible value
    */
