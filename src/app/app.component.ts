@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MenuItem } from '../../projects/ui/src/lib/menu/datastructure';
+import { StyleService } from '../../projects/ui/src/lib/services/style.service';
 
 @Component({
   selector: 'app-root',
   template: `
     <jff-screen-locker [visible]="lockerVisible">
       <h1>Login</h1>
-      <button (click)="lockerVisible = !lockerVisible">X</button>
+      <jff-button (click)="lockerVisible = !lockerVisible">X</jff-button>
     </jff-screen-locker>
     <jff-layout
       [headerVisible]="true"
@@ -15,17 +16,31 @@ import { MenuItem } from '../../projects/ui/src/lib/menu/datastructure';
       [(rightSidebarVisible)]="rightSidebarVisible"
     >
       <div class="head" layout_header>
-        <button (click)="toggleLeftMenu()">
-          <icon-menu *ngIf="!leftSidebarVisible"></icon-menu>
-          <icon-close *ngIf="leftSidebarVisible"></icon-close>
-        </button>
+        <jff-button (click)="toggleLeftMenu()" [width]="25" [height]="25">
+          <icon-menu
+            *ngIf="!leftSidebarVisible"
+            [color]="styleService.baseTextColor"
+          ></icon-menu>
+          <icon-close
+            *ngIf="leftSidebarVisible"
+            [color]="styleService.baseTextColor"
+          ></icon-close>
+        </jff-button>
 
-        <button (click)="toggleRightMenu()">
-          <icon-menu *ngIf="!rightSidebarVisible"></icon-menu>
-          <icon-close *ngIf="rightSidebarVisible"></icon-close>
-        </button>
+        <jff-button (click)="toggleRightMenu()" [width]="25" [height]="25">
+          <icon-menu
+            *ngIf="!rightSidebarVisible"
+            [color]="styleService.baseTextColor"
+          ></icon-menu>
+          <icon-close
+            *ngIf="rightSidebarVisible"
+            [color]="styleService.baseTextColor"
+          ></icon-close>
+        </jff-button>
 
-        <button (click)="lockerVisible = true">Open Locker</button>
+        <jff-button (click)="lockerVisible = true" [height]="25"
+          >Open Locker</jff-button
+        >
       </div>
 
       <p layout_left_sidebar>
@@ -41,27 +56,10 @@ import { MenuItem } from '../../projects/ui/src/lib/menu/datastructure';
       <div class="foot" layout_footer></div>
     </jff-layout>
   `,
-  styles: [
-    `
-      .head,
-      .foot {
-        background-color: blue;
-        box-shadow: 0 2px 5px #0000004d;
-        height: 100%;
-      }
-
-      .head > button {
-        width: 35px;
-        height: 35px;
-        background-color: transparent;
-        border: none;
-        padding: 5px;
-        cursor: pointer;
-      }
-    `,
-  ],
+  styles: [],
 })
 export class AppComponent {
+  styleService = inject(StyleService);
   leftSidebarVisible = true;
   rightSidebarVisible = false;
   lockerVisible = false;

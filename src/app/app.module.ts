@@ -11,6 +11,8 @@ import { AppLayoutComponent } from '../../projects/ui/src/lib/app-layout/app.lay
 import { SimpleChatComponent } from './components/simple.chat.component';
 import { ScreenLockerComponent } from '../../projects/ui/src/lib/screen-locker/screen.locker.component';
 import { MenuComponent } from '../../projects/ui/src/lib/menu/menu.component';
+import { ButtonComponent } from '../../projects/ui/src/lib/button/buton.component';
+import { StyleService } from '../../projects/ui/src/lib/services/style.service';
 
 @NgModule({
   declarations: [AppComponent, SimpleChatComponent],
@@ -24,8 +26,9 @@ import { MenuComponent } from '../../projects/ui/src/lib/menu/menu.component';
     AppLayoutComponent,
     ScreenLockerComponent,
     MenuComponent,
+    ButtonComponent,
   ],
-  providers: [],
+  providers: [StyleService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

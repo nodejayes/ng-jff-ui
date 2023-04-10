@@ -1,3 +1,15 @@
-<button (click)="onClick.emit()">
+<button (click)="onClick.emit()"
+        (mouseout)="hover = false"
+        (mouseover)="hover = true"
+        [style.background-color]="hover ? hoverBackgroundColor : backgroundColor"
+        [style.border-color]="borderColor"
+        [style.border-radius]="borderRadius + 'px'"
+        [style.border-width]="borderWidth + 'px'"
+        [style.color]="hover ? hoverTextColor : textColor"
+        [style.cursor]="cursor"
+        [style.height]="height < 1 ? 'auto' : height + 'px'"
+        [style.margin]="margin"
+        [style.width]="width < 1 ? 'auto' : width + 'px'"
+>
   <ng-content></ng-content>
 </button>

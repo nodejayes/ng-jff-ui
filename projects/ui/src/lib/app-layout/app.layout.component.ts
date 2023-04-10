@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -19,12 +20,13 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ViewportService, ViewState } from '../services/viewport.service';
 import { Subscription } from 'rxjs';
+import { StyleService } from '../services/style.service';
 
 @Component({
   selector: 'jff-layout',
   standalone: true,
   imports: [NgIf, NgScrollbarModule, AsyncPipe],
-  providers: [ViewportService],
+  providers: [ViewportService, StyleService],
   templateUrl: 'app.layout.component.html',
   styleUrls: ['app.layout.component.css'],
   animations: [
@@ -109,7 +111,6 @@ export class AppLayoutComponent implements OnInit, OnDestroy, OnChanges {
    * this one changes automatically when the rightMenuVisible was changed
    */
   rightSidebarAnimationState = 'on';
-
   /*
    * is the left Menu of the Layout visible or not
    */
@@ -130,14 +131,24 @@ export class AppLayoutComponent implements OnInit, OnDestroy, OnChanges {
   @Output() rightSidebarVisibleChange = new EventEmitter<boolean>(true);
   @Output() headerVisibleChange = new EventEmitter<boolean>();
   @Output() footerVisibleChange = new EventEmitter<boolean>();
-  private viewSwitchListener: Subscription | null = null;
-
-  constructor(private viewportService: ViewportService) {}
-
+  private styleService = inject(StyleService);
+  @Input() headerColor = this.styleService.accentColor;
+  @Input() footerColor = this.styleService.accentColor;
+  /*
+   * change the AnimationState of the right Menu from given Visible Value
+   * @param currentValue the current rightMenuVisible value
+   */
+  @Input() mainColor = this.styleService.baseColor;
   /*
    * change the AnimationState of the left Menu from given Visible Value
    * @param currentValue the current leftMenuVisible value
    */
+  @Input() rightSidebarColor = this.styleService.accentSecondColor;
+  @Input() leftSidebarColor = this.styleService.accentSecondColor;
+  private viewSwitchListener: Subscription | null = null;
+
+  constructor(private viewportService: ViewportService) {}
+
   leftSidebarStateChange(currentValue: boolean): void {
     if (currentValue) {
       this.leftSidebarAnimationState = 'on';
@@ -146,10 +157,6 @@ export class AppLayoutComponent implements OnInit, OnDestroy, OnChanges {
     this.leftSidebarAnimationState = 'off';
   }
 
-  /*
-   * change the AnimationState of the right Menu from given Visible Value
-   * @param currentValue the current rightMenuVisible value
-   */
   rightSidebarStateChange(currentValue: boolean): void {
     if (currentValue) {
       this.rightSidebarAnimationState = 'on';

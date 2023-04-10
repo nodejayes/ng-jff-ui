@@ -1,47 +1,51 @@
-
 <div class="app-layout">
-  <header data-testid="layout-header" *ngIf="headerVisible">
+  <header *ngIf="headerVisible" [style.background-color]="headerColor"
+          data-testid="layout-header">
     <ng-content select="[layout_header]"></ng-content>
   </header>
   <div
-    [class.app-content]="headerVisible && footerVisible"
     [class.app-content-no-footer]="headerVisible && !footerVisible"
     [class.app-content-no-header]="!headerVisible && footerVisible"
     [class.app-content-pure]="!headerVisible && !footerVisible"
+    [class.app-content]="headerVisible && footerVisible"
   >
     <aside
-      data-testid="layout-left-sidebar"
-      scrollViewport
-      class='leftSidebar'
       *ngIf="leftSidebarVisible"
       @leftSidebar
+      [style.background-color]="leftSidebarColor"
+      class='leftSidebar'
+      data-testid="layout-left-sidebar"
+      scrollViewport
     >
-      <ng-scrollbar class='mainScrollbar' [track]="'all'">
+      <ng-scrollbar [track]="'all'" class='mainScrollbar'>
         <ng-content select="[layout_left_sidebar]"></ng-content>
       </ng-scrollbar>
     </aside>
     <aside
-      data-testid="layout-right-sidebar"
-      class='rightSidebar'
       *ngIf="rightSidebarVisible"
       @rightSidebar
+      [style.background-color]="rightSidebarColor"
+      class='rightSidebar'
+      data-testid="layout-right-sidebar"
     >
-      <ng-scrollbar class='mainScrollbar' [track]="'all'">
+      <ng-scrollbar [track]="'all'" class='mainScrollbar'>
         <ng-content select="[layout_right_sidebar]"></ng-content>
       </ng-scrollbar>
     </aside>
     <main
-      data-testid="layout-main-content"
-      class='appLayoutMain'
       [@mainContentLeft]="leftSidebarAnimationState"
       [@mainContentRight]="rightSidebarAnimationState"
+      [style.background-color]="mainColor"
+      class='appLayoutMain'
+      data-testid="layout-main-content"
     >
-      <ng-scrollbar class='mainScrollbar' [track]="'all'">
+      <ng-scrollbar [track]="'all'" class='mainScrollbar'>
         <ng-content select="[layout_content]"></ng-content>
       </ng-scrollbar>
     </main>
   </div>
-  <footer data-testid="layout-footer" *ngIf="footerVisible">
+  <footer *ngIf="footerVisible" [style.background-color]="footerColor"
+          data-testid="layout-footer">
     <ng-content select="[layout_footer]"></ng-content>
   </footer>
 </div>
